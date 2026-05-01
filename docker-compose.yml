@@ -35,7 +35,7 @@ services:
     networks:
       - default
     volumes:
-      - ./volumes/postgres:/app/db
+      - ./volumes/postgres:/var/lib/postgresql/data
     command:
       - "postgres"
       - "-c"

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -72,22 +73,24 @@ WSGI_APPLICATION = 'duplicate_file_killer.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 # DATABASES = {
-#     DEFAULT_DATABASE: {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': config('POSTGRES_DBNAME', default='bender'),
-#         'USER': config('POSTGRES_USER', default='bender'),
-#         'PASSWORD': config('POSTGRES_PASSWORD', default='bender'),
-#         'HOST': config('POSTGRES_HOST', default='postgres_db'),
-#         'PORT': config('POSTGRES_PORT', default=5432, cast=int),
-#     },
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
 # }
+
+DEFAULT_DATABASE = 'default'
+DATABASES = {
+    DEFAULT_DATABASE: {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('POSTGRES_DBNAME', default='duplicate_file_killer'),
+        'USER': config('POSTGRES_USER', default='duplicate_file_killer'),
+        'PASSWORD': config('POSTGRES_PASSWORD', default='duplicate_file_killer'),
+        'HOST': config('POSTGRES_HOST', default='postgres_db'),
+        'PORT': config('POSTGRES_PORT', default=5432, cast=int),
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
