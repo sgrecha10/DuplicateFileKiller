@@ -11,6 +11,7 @@ services:
       - default
     volumes:
       - ./src:/app
+      - /home:/home:ro
     env_file:
       - ./.env
     ports:

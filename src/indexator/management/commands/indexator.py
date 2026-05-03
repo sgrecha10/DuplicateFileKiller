@@ -1,7 +1,22 @@
+import os
+
 from django.core.management import BaseCommand
 from blake3 import blake3
-from indexator.models import MediaFile
 
+from duplicate_file_killer.settings import ALLOWED_HOSTS
+from indexator.models import MediaFile
+from pathlib import Path
+from datetime import datetime
+
+
+BASE_DIR = '/home/grechnev/Изображения'
+
+ALLOWED_SUFFIXES = [
+    '.jpg',
+    '.jpeg',
+    '.png',
+    '.gif',
+]
 
 
 def file_hash(path: str) -> str:
@@ -25,6 +40,24 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.NOTICE('Start...'))
 
-        path = './2026-05-01_11-36.png'
+        for path in Path(BASE_DIR).rglob("*"):
+            if path.is_file():
+                file_type = path.suffix
 
-        self.stdout.write(file_hash(path))
+                if file_type not in ALLOWED_SUFFIXES:
+                    continue
+
+                self.stdout.write(str(path))
+
+                MediaFile.objects.update_or_create(
+                    path=str(path),
+                    # blake3=file_hash(str(path)),
+                    defaults={
+                        'size': path.stat().st_size,
+                        'file_type': file_type,
+                        'mtime': datetime.fromtimestamp(
+                            path.stat().st_mtime
+                        ),
+                        'blake3': file_hash(str(path)),
+                    }
+                )
