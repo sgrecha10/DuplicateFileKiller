@@ -2,18 +2,10 @@ from datetime import datetime
 from pathlib import Path
 
 from blake3 import blake3
+from django.conf import settings
 from django.core.management import BaseCommand
 
 from indexator.models import MediaFile
-
-BASE_DIR = '/home/grechnev/Изображения'
-
-ALLOWED_SUFFIXES = [
-    '.jpg',
-    '.jpeg',
-    '.png',
-    '.gif',
-]
 
 
 def file_hash(path: str) -> str:
@@ -29,19 +21,14 @@ def file_hash(path: str) -> str:
 class Command(BaseCommand):
     help = 'Индексация медиа файлов'
 
-    # def add_arguments(self, parser):
-    #     parser.add_argument('kladr_id', type=int)
-
     def handle(self, *args, **options):
-        # kladr_id = options['kladr_id']
-
         self.stdout.write(self.style.NOTICE('Start...'))
 
-        for path in Path(BASE_DIR).rglob("*"):
+        for path in Path(settings.SOURCE_DIR).rglob("*"):
             if path.is_file():
                 file_type = path.suffix
 
-                if file_type not in ALLOWED_SUFFIXES:
+                if file_type not in settings.ALLOWED_SUFFIXES:
                     continue
 
                 self.stdout.write(str(path))
@@ -58,3 +45,5 @@ class Command(BaseCommand):
                         'blake3': file_hash(str(path)),
                     }
                 )
+
+        self.stdout.write(self.style.NOTICE('End.'))
