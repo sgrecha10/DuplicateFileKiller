@@ -1,13 +1,10 @@
-import os
-
-from django.core.management import BaseCommand
-from blake3 import blake3
-
-from duplicate_file_killer.settings import ALLOWED_HOSTS
-from indexator.models import MediaFile
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
+from blake3 import blake3
+from django.core.management import BaseCommand
+
+from indexator.models import MediaFile
 
 BASE_DIR = '/home/grechnev/Изображения'
 
