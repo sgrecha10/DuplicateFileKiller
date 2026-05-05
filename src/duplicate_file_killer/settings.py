@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'indexator',
+    'mover',
 ]
 
 MIDDLEWARE = [
@@ -131,6 +132,7 @@ STATIC_URL = 'static/'
 
 
 SOURCE_DIR = config('SOURCE_DIR', default='/home/', cast=str)
+TARGET_DIR = config('TARGET_DIR', default='', cast=str)
 
 ALLOWED_SUFFIXES = [
     '.jpg',

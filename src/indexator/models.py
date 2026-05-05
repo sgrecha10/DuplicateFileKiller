@@ -4,6 +4,7 @@ from django.db import models
 class MediaFile(models.Model):
     path = models.TextField(
         verbose_name='Path',
+        unique=True,
     )
     size = models.PositiveBigIntegerField(
         verbose_name='Size',

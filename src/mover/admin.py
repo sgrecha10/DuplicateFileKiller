@@ -1,20 +1,15 @@
 from django.contrib import admin
-from .models import MediaFile
+from .models import CopiedFile
 from django.db import models
 from django.forms import Textarea
 
 
-@admin.register(MediaFile)
-class MediaFileAdmin(admin.ModelAdmin):
+@admin.register(CopiedFile)
+class CopiedFileAdmin(admin.ModelAdmin):
     list_display = (
-        'id',
-        'path',
-        'size',
-        'file_type',
-        'mtime',
         'blake3',
-        # 'updated',
-        # 'created',
+        'path',
+        'created',
     )
 
     readonly_fields = list_display

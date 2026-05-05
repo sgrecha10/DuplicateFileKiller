@@ -6,6 +6,7 @@ from django.conf import settings
 from django.core.management import BaseCommand
 
 from indexator.models import MediaFile
+from django.db import IntegrityError
 
 
 def file_hash(path: str) -> str:
@@ -22,7 +23,7 @@ class Command(BaseCommand):
     help = 'Индексация медиа файлов'
 
     def handle(self, *args, **options):
-        self.stdout.write(self.style.NOTICE('Start...'))
+        self.stdout.write(self.style.SUCCESS('Start...'))
 
         for path in Path(settings.SOURCE_DIR).rglob("*"):
             if path.is_file():
@@ -31,19 +32,18 @@ class Command(BaseCommand):
                 if file_type not in settings.ALLOWED_SUFFIXES:
                     continue
 
-                self.stdout.write(str(path))
-
-                MediaFile.objects.update_or_create(
-                    path=str(path),
-                    # blake3=file_hash(str(path)),
-                    defaults={
-                        'size': path.stat().st_size,
-                        'file_type': file_type,
-                        'mtime': datetime.fromtimestamp(
+                try:
+                    MediaFile.objects.create(
+                        path=str(path),
+                        size= path.stat().st_size,
+                        file_type= file_type,
+                        mtime= datetime.fromtimestamp(
                             path.stat().st_mtime
                         ),
-                        'blake3': file_hash(str(path)),
-                    }
-                )
+                        blake3= file_hash(str(path)),
+                    )
+                    self.stdout.write(self.style.SUCCESS(str(path)))
+                except IntegrityError as e:
+                    self.stdout.write(self.style.ERROR(str(e)))
 
-        self.stdout.write(self.style.NOTICE('End.'))
+        self.stdout.write(self.style.SUCCESS('End.'))
