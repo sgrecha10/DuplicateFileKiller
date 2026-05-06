@@ -16,8 +16,8 @@ class MediaFileAdmin(admin.ModelAdmin):
         # 'updated',
         # 'created',
     )
-
     readonly_fields = list_display
+    search_fields = ('blake3',)
 
     formfield_overrides = {
         models.TextField: {'widget': Textarea(attrs={'rows': 1, 'cols': 80})},
