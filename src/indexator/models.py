@@ -14,6 +14,7 @@ class MediaFile(models.Model):
     )
     mtime = models.DateTimeField(
         verbose_name='mtime',
+        blank=True, null=True,
     )
     blake3 = models.TextField(
         verbose_name='BLAKE3',

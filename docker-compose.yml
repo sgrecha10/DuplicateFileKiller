@@ -11,7 +11,7 @@ services:
       - default
     volumes:
       - ./src:/app
-      - /home:/home:ro
+      - /home:/home
     env_file:
       - ./.env
     ports:
@@ -32,7 +32,7 @@ services:
         max-size: "1m"
         max-file: "1"
     ports:
-      - "5435:5432"
+      - "5432:5432"
     networks:
       - default
     volumes:

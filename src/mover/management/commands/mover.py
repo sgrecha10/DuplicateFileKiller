@@ -1,10 +1,10 @@
-from datetime import datetime
+import os
+import shutil
 from pathlib import Path
+from typing import Optional
 
-from blake3 import blake3
 from django.conf import settings
 from django.core.management import BaseCommand
-from time import sleep
 
 from indexator.models import MediaFile
 from mover.models import CopiedFile
@@ -32,13 +32,40 @@ class Command(BaseCommand):
                 try:
                     copied_file = CopiedFile.objects.create(blake3=media_file.blake3)
                 except Exception as e:
-                    self.stdout.write(self.style.NOTICE(str(e)))
+                    # self.stdout.write(self.style.NOTICE(str(e)))
                     continue
 
                 # тут надо копировать файл
-                # copied_file.path = ...
-                # copied_file.save(update_fields=['path'])
+                if target_path := self._copy_file(media_file):
+                    copied_file.path = target_path
+                    copied_file.save(update_fields=['path'])
 
             # sleep(1)
 
         self.stdout.write(self.style.SUCCESS('End.'))
+
+    def _copy_file(self, media_file: MediaFile) -> Optional[str]:
+        try:
+            mtime = media_file.mtime
+            year_dir_name = mtime.year
+            month_dir_name = mtime.month
+            file_name = media_file.path.split('/')[-1]
+            target_path = f'{settings.TARGET_DIR}/{year_dir_name}/{month_dir_name:02}/{file_name}'
+
+            src = Path(str(media_file.path))
+            dst = Path(target_path)
+
+            # создать директории
+            dst.parent.mkdir(parents=True, exist_ok=True)
+
+            # копировать файл
+            shutil.copy2(src, dst)
+
+            # нормализация прав
+            os.chmod(dst, 0o644)
+
+        except Exception as e:
+            self.stdout.write(self.style.ERROR(str(e)))
+            return ''
+
+        return target_path
