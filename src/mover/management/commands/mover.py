@@ -30,7 +30,11 @@ class Command(BaseCommand):
             for media_file in chunk:
                 pointer_id = media_file.id
                 try:
-                    copied_file = CopiedFile.objects.create(blake3=media_file.blake3)
+                    copied_file = CopiedFile.objects.create(
+                        blake3=media_file.blake3,
+                        size=media_file.size,
+                        mtime=media_file.mtime,
+                    )
                 except Exception as e:
                     # self.stdout.write(self.style.NOTICE(str(e)))
                     continue

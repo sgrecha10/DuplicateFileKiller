@@ -8,6 +8,14 @@ class CopiedFile(models.Model):
     )
     path = models.TextField(
         verbose_name='Path',
+        default='',
+    )
+    size = models.PositiveBigIntegerField(
+        verbose_name='Size',
+    )
+    mtime = models.DateTimeField(
+        verbose_name='mtime',
+        blank=True, null=True,
     )
     created = models.DateTimeField(
         auto_now_add=True,

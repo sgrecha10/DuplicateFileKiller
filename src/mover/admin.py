@@ -9,6 +9,8 @@ class CopiedFileAdmin(admin.ModelAdmin):
     list_display = (
         'blake3',
         'path',
+        'size',
+        'mtime',
         'created',
     )
 
